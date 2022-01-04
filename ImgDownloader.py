@@ -5,10 +5,10 @@ import json
 import requests
 import urllib
 
-from hutil.Qt import QtCore
-from hutil.Qt import QtGui
+from PySide2 import QtCore
+from PySide2 import QtGui
 from PySide2 import QtNetwork
-from hutil.Qt import QtWidgets
+from PySide2 import QtWidgets
 
 
 class ImgDownloader(QtCore.QObject):
@@ -19,7 +19,7 @@ class ImgDownloader(QtCore.QObject):
 
     def start_fetch(self, net_mgr):
         self.fetch_task = net_mgr.get(self.req)
-        self.fetch_task.finish.connect(self.resolve_fetch)
+        self.fetch_task.finished.connect(self.resolve_fetch)
 
     def resolve_fetch(self):
         the_reply = self.fetch_task.readAll()
