@@ -35,16 +35,9 @@ class MixAssetBrowser(QtWidgets.QWidget):
         super(MixAssetBrowser, self).__init__()
 
         self.uiLoader = QUiLoader()
-        tempd = tempfile.TemporaryDirectory()
-        copyfile(r'C:\Users\Omen\Documents\houdini19.0\python3.7libs\mixassetbrowser\assetBrowser\form.ui', os.path.join(tempd, 'form.ui'))
-        # print ()
-        QTextCodec.setCodecForLocale(QTextCodec.codecForName('UTF-8'))
-        file = QFile(r'C:\Users\Omen\Documents\houdini19.0\python3.7libs\mixassetbrowser\assetBrowser\form.ui')
-        file.open(QFile.ReadOnly)
-        print(self.getUIPath())
-        #self.ui = self.uiLoader.load(file, self)
-        file.close()
-        #self.content = self.ui.contentArea
+
+        # tempfile.mkdtemp()
+        self.prepare_content()
 
         request = requests.get(preferences.getAssetsUrl())
         data = json.loads(request.content)
@@ -53,7 +46,7 @@ class MixAssetBrowser(QtWidgets.QWidget):
 
         main_layout = QtWidgets.QVBoxLayout()
         main_layout.setContentsMargins(0, 0, 0, 0)
-        #main_layout.addWidget(self.ui)
+        main_layout.addWidget(self.ui)
         icon_view = QtWidgets.QListWidget()
         icon_view.setViewMode(QtWidgets.QListWidget.IconMode)
 
@@ -75,11 +68,27 @@ class MixAssetBrowser(QtWidgets.QWidget):
 
         self.setLayout(main_layout)
 
+    def prepare_content(self):
+        tempd = tempfile.gettempdir()
+        if (not os.path.isdir(tempd)):
+            os.mkdir(tempd)
+        tempf = os.path.join(tempd, 'form.ui')
+        print(tempd)
+        print(tempf)
+        print(self.getUIPath())
+        copyfile(self.getUIPath(), tempf)
+        # print ()
+        # QTextCodec.setCodecForLocale(QTextCodec.codecForName('UTF-8'))
+        file = QFile(tempf)
+        file.open(QFile.ReadOnly)
+        self.ui = self.uiLoader.load(file, self)
+        file.close()
+        self.content = self.ui.contentArea
 
     def getUIPath(self):
-        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), r'assetBrowser\form.ui')
+        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), r'qt\assetBrowser\form.ui')
 
-        return os.path.join(os.path.dirname(os.path.abspath(__file__)), r'assetBrowser\form.ui')
+        return os.path.join(os.path.dirname(os.path.abspath(__file__)), r'qt\assetBrowser\form.ui')
 
 def print_hi(name):
     # Use a breakpoint in the code line below to debug your script.
