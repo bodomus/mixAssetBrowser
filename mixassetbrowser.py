@@ -24,6 +24,7 @@ from .flowlayout import FlowLayout
 thumb_width = 70
 thumb_height = 70
 assets_url = 'https://api.polyhaven.com/assets?t=hdris&c=outdoor'
+FORM_UI = 'form.ui'
 
 # from hutil.Qt.QtCore import Qt
 # https://cdn.polyhaven.com/asset_img/primary/park_parking.png?height=70
@@ -35,22 +36,18 @@ class MixAssetBrowser(QtWidgets.QWidget):
         super(MixAssetBrowser, self).__init__()
 
         self.uiLoader = QUiLoader()
-
-        # tempfile.mkdtemp()
         self.prepare_content()
-
-        request = requests.get(preferences.getAssetsUrl())
-        data = json.loads(request.content)
-        # print(data['urban_street_01'])
         self.download_queue = QtNetwork.QNetworkAccessManager()
 
         main_layout = QtWidgets.QVBoxLayout()
         main_layout.setContentsMargins(0, 0, 0, 0)
-        main_layout.addWidget(self.ui)
+        main_layout.addWidget(self.content)
         icon_view = QtWidgets.QListWidget()
         icon_view.setViewMode(QtWidgets.QListWidget.IconMode)
 
-
+        # get Assets icons
+        request = requests.get(preferences.getAssetsUrl())
+        data = json.loads(request.content)
         # polyhaven stuff
 
         for url in data.keys():
@@ -72,7 +69,7 @@ class MixAssetBrowser(QtWidgets.QWidget):
         tempd = tempfile.gettempdir()
         if (not os.path.isdir(tempd)):
             os.mkdir(tempd)
-        tempf = os.path.join(tempd, 'form.ui')
+        tempf = os.path.join(tempd, FORM_UI)
         print(tempd)
         print(tempf)
         print(self.getUIPath())
