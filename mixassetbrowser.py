@@ -64,23 +64,23 @@ class MixAssetBrowser(QtWidgets.QWidget):
         main_layout.addWidget(icon_view)
 
         self.setLayout(main_layout)
+        f = FlowLayout()
+        f1 = FlowLayout()
 
     def prepare_content(self):
         tempd = tempfile.gettempdir()
         if (not os.path.isdir(tempd)):
             os.mkdir(tempd)
         tempf = os.path.join(tempd, FORM_UI)
-        print(tempd)
-        print(tempf)
-        print(self.getUIPath())
         copyfile(self.getUIPath(), tempf)
-        # print ()
-        # QTextCodec.setCodecForLocale(QTextCodec.codecForName('UTF-8'))
-        file = QFile(tempf)
-        file.open(QFile.ReadOnly)
-        self.ui = self.uiLoader.load(file, self)
-        file.close()
-        self.content = self.ui.contentArea
+
+        try:
+            file = QFile(tempf)
+            file.open(QFile.ReadOnly)
+            self.ui = self.uiLoader.load(file, self)
+            self.content = self.ui.contentArea
+        finally:
+            file.close()
 
     def getUIPath(self):
         path = os.path.join(os.path.dirname(os.path.abspath(__file__)), r'qt\assetBrowser\form.ui')
